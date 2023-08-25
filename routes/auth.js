@@ -6,6 +6,7 @@ const userService = require('../services/users')
 const userModel = require('../model/users')
 const authService = require('../services/auth')
 
+const bcrypt = require('bcrypt')
 require('dotenv').config()
 
 const UserService = new userService(userModel)
@@ -19,13 +20,25 @@ router.post('/login',async(req,res)=>{
     try{
         const user = await AuthService.login(email,password)
         
-        const userRole = {
-            ...user,
-            role: 'usuarios',
-            permissions: ['users:me']
-        }
+        let userRole; 
 
-        console.log("useRole",userRole)
+        if(user.role === 'admin'){
+            if( await bcrypt.compare(password, user.password)){
+                userRole = {
+                    ...user,
+                    role: 'admin',
+                    permissions: ['admin:yo']
+                }
+            }
+        } else {
+            if(await bcrypt.compare(password, user.password)){
+                userRole = {
+                    ...user,
+                    role: 'usuario',
+                    permissions: ['users:me']
+                }
+            }
+        }
 
          const token = jwt.sign({
            data: userRole,
