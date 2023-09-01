@@ -27,7 +27,7 @@ router.post('/login',async(req,res)=>{
                 userRole = {
                     ...user,
                     role: 'admin',
-                    permissions: ['admin:yo']
+                    permissions: ['admin:yo', 'pass:change']
                 }
             }
         } else {
@@ -35,7 +35,7 @@ router.post('/login',async(req,res)=>{
                 userRole = {
                     ...user,
                     role: 'usuario',
-                    permissions: ['users:me']
+                    permissions: ['users:me', 'pass:change']
                 }
             }
         }
